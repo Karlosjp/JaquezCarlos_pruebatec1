@@ -71,7 +71,7 @@ public class EmpleadoController {
             if (msg == null || msg.length() == 0) {
                 long id = empleado.getId();
 
-                if (findMascotabyId(id) == null)
+                if (findEmpleadoById(id) == null)
                     throw new NonexistentEntityException("EL empleado con ID: " + id + " no existe");
             }
 
@@ -109,7 +109,35 @@ public class EmpleadoController {
         }
     }
 
-    public Empleado findEmpleadoByCargo(String cargo) {
+    public List<Empleado> findEmpleadoByCargo(String cargo) {
+        EntityManager em = getEntityManager();
+
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Empleado> query = cb.createQuery(Empleado.class);
+            Root<Empleado> empleado = query.from(Empleado.class);
+            Query q = em.createQuery(query.where(cb.equal(empleado.get("cargo"), cargo)));
+
+            List<Empleado> listaEmpleados = q.getResultList();
+
+
+            return listaEmpleados;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Empleado findEmpleadoById(long id) {
+        EntityManager em = getEntityManager();
+
+        try {
+            return em.find(Empleado.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    public long findEmpleadoLastId() {
         EntityManager em = getEntityManager();
 
         try {
@@ -117,19 +145,9 @@ public class EmpleadoController {
             CriteriaQuery<Empleado> query = cb.createQuery(Empleado.class);
             Root<Empleado> empleado = query.from(Empleado.class);
 
-            query.where(cb.equal(empleado.get("cargo"), cargo));
+            //Query q = em.createQuery(query.select(cb.max(empleado.get("id"))).orderBy("id"));
 
-            return null;
-        } finally {
-            em.close();
-        }
-    }
-
-    public Empleado findMascotabyId(long id) {
-        EntityManager em = getEntityManager();
-
-        try {
-            return em.find(Empleado.class, id);
+            return 0L;
         } finally {
             em.close();
         }

@@ -18,12 +18,8 @@ public class ControladoraPersistencia {
         return empleadoJPA.findEmpleadoEntities();
     }
 
-    public Empleado buscarEmpleados(String cargo) {
+    public List<Empleado> buscarEmpleadosByCargo(String cargo) {
         return empleadoJPA.findEmpleadoByCargo(cargo);
-    }
-
-    public Empleado buscarEmpleados(long id) {
-        return empleadoJPA.findMascotabyId(id);
     }
 
     public void modificarEmpleado(Empleado empleado) {
