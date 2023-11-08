@@ -81,11 +81,12 @@ public class Empleado {
     @Override
     public String toString() {
         return "Empleado{" +
-                ", Nombre ='" + nombre + '\'' +
-                ", Apellido ='" + apellido + '\'' +
-                ", Cargo ='" + cargo + '\'' +
-                ", Salario =" + salario +
-                ", Fecha de inicio =" + fechaInicio +
+                ", ID = '" + id + '\'' +
+                ", Nombre = '" + nombre + '\'' +
+                ", Apellido = '" + apellido + '\'' +
+                ", Cargo = '" + cargo + '\'' +
+                ", Salario = " + salario +
+                ", Fecha de inicio = " + fechaInicio +
                 '}';
     }
 }

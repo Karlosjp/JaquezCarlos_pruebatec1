@@ -90,6 +90,7 @@ public class EmpleadoController {
         return findEmpleadoEntities(false, maxResults, firstResult);
     }
 
+    // Recupera la lista completa de empleados de la BBDD
     public List<Empleado> findEmpleadoEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
 
@@ -120,7 +121,6 @@ public class EmpleadoController {
 
             List<Empleado> listaEmpleados = q.getResultList();
 
-
             return listaEmpleados;
         } finally {
             em.close();
@@ -137,17 +137,18 @@ public class EmpleadoController {
         }
     }
 
+    // Busca y devuelve el ultimo id de los datos que hay en la tabla empleados
     public long findEmpleadoLastId() {
         EntityManager em = getEntityManager();
 
         try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<Empleado> query = cb.createQuery(Empleado.class);
-            Root<Empleado> empleado = query.from(Empleado.class);
+            List<Empleado> listEmpleados = findEmpleadoEntities();
+            Long id = 0L;
 
-            //Query q = em.createQuery(query.select(cb.max(empleado.get("id"))).orderBy("id"));
+            for (Empleado empleado : listEmpleados)
+                if (empleado.getId() > id) id = empleado.getId();
 
-            return 0L;
+            return id;
         } finally {
             em.close();
         }

@@ -1,73 +1,101 @@
 package org.example;
 
+import org.example.complements.Auxiliar;
 import org.example.logica.Empleado;
 import org.example.persistencia.ControladoraPersistencia;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     private static ControladoraPersistencia controladora = new ControladoraPersistencia();
+    private static Scanner sc = new Scanner(System.in);
     public static void main(String[] args) {
-        /*
+        System.out.println("Bienbenido al programa.");
+
+        menu();
+
+        System.out.println("El programa ha finalizado");
+        sc.close();
+       /*
         List<Empleado> listEmpleados = new ArrayList<>();
+        Empleado empleado1 = new Empleado(controladora.buscarEmpleadoLastId(), "Carlos", "Jaquez", "Cargo 1", 1000.0, stringToDate("6/11/2023"));
+        Empleado empleado2 = new Empleado(controladora.buscarEmpleadoLastId(), "Miguel", "German", "Cargo 2", 1100.0, stringToDate("5/10/2022"));
+        Empleado empleado3 = new Empleado(controladora.buscarEmpleadoLastId(), "Fernando", "Santos", "Cargo 1", 1200.0, stringToDate("10/11/2020"));
+        Empleado empleado4 = new Empleado(controladora.buscarEmpleadoLastId(), "Anny", "Marte", "Cargo 3", 1300.0, stringToDate("15/11/2013"));
+        Empleado empleado5 = new Empleado(controladora.buscarEmpleadoLastId(), "Marta", "Cuevas", "Cargo 4", 1400.0, stringToDate("6/1/2018"));
 
-        listEmpleados.add(new Empleado(1L, "Carlos", "Jaquez", "Cargo 1", 1000.0, stringToDate("6/11/2023")));
-        listEmpleados.add(new Empleado(2L, "Miguel", "German", "Cargo 2", 1100.0, stringToDate("5/10/2022")));
-        listEmpleados.add(new Empleado(3L, "Fernando", "Santos", "Cargo 1", 1200.0, stringToDate("10/11/2020")));
-        listEmpleados.add(new Empleado(4L, "Anny", "Marte", "Cargo 3", 1300.0, stringToDate("15/11/2013")));
-        listEmpleados.add(new Empleado(5L, "Marta", "Cuevas", "Cargo 4", 1400.0, stringToDate("6/1/2018")));
-
-        mostrarEmpleado(listEmpleados);
-        */
 
         mostrarEmpleado(buscarEmpleado());
         mostrarEmpleado(buscarEmpleado("Cargo 4"));
         mostrarEmpleado(buscarEmpleado("Cargo 1"));
+
+        */
     }
 
-    public static Date stringToDate(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        try {
-            return sdf.parse(date);
-        } catch (ParseException e) {
-            System.err.println(e.getMessage());
-        }
-
-        return new Date();
+    public static void registrarEmpleado(Empleado empleado) {
+        controladora.agregarEmpleado(empleado);
+        System.out.println("Empleado registrado");
     }
 
-    public static Empleado crearEmpleado() {
+    public static List<Empleado> buscarEmpleado() {
+        return controladora.buscarEmpleados();
+    }
+
+    public static Empleado buscarEmpleado(long id) {
+        return controladora.buscarEmpleadoById(id);
+    }
+
+    public static List<Empleado> buscarEmpleado(String campo) {
+        return controladora.buscarEmpleadosByCargo(campo);
+    }
+
+    public static void actualizarEmpleado(Empleado empleado) {
+        controladora.modificarEmpleado(empleado);
+        System.out.println("Actualizacion realizada");
+    }
+
+    public static void eliminarEmpleado(long id) {
+        controladora.eliminarEmpleado(id);
+        System.out.println("Empleado borrado");
+    }
+
+    private static void mostrarEmpleado(List<Empleado> empleados) {
+        for (Empleado empleado : empleados)
+            System.out.println(empleado);
+    }
+
+    private static Empleado crearEmpleado() {
         Empleado nuevoEmpleado = null;
-        String entradaDatos = "";
+        String entradaDatos;
 
         do {
             System.out.println("Escribe 'exit' para terminar, si deseas crear un nuevo empleado escribe 1");
-            entradaDatos = introducirDatosString();
+            entradaDatos = Auxiliar.introducirDatosString();
 
             if (entradaDatos.equals("1")) {
                 System.out.println("Para crear el nuevo empleado, introduce los siguientes datos: ");
 
                 System.out.print("Nombre: ");
-                String nombre = introducirDatosString();
+                String nombre = Auxiliar.introducirDatosString();
 
                 System.out.print("Apellido: ");
-                String apellido = introducirDatosString();
+                String apellido = Auxiliar.introducirDatosString();
 
                 System.out.print("Cargo: ");
-                String cargo = introducirDatosString();
+                String cargo = Auxiliar.introducirDatosString();
 
                 System.out.print("salario : ");
-                Double salario = introducirDatosDouble();
+                Double salario = Auxiliar.introducirDatosDouble();
 
-                System.out.print("Fecha de inicio: ");
-                Date fechaInicio = introducirDatosDate();
+                System.out.println("Fecha de inicio");
+                Date fechaInicio = Auxiliar.introducirDatosDate();
 
-                nuevoEmpleado = new Empleado(1l, nombre, apellido, cargo, salario, fechaInicio);
+                Long id = controladora.buscarEmpleadoLastId();
+
+                nuevoEmpleado = new Empleado(id, nombre, apellido, cargo, salario, fechaInicio);
             }
 
         } while (entradaDatos.equals("salir"));
@@ -75,51 +103,82 @@ public class Main {
         return nuevoEmpleado;
     }
 
-    public static List<Empleado> buscarEmpleado() {
-        return controladora.buscarEmpleados();
-    }
+    private static Empleado modificarEmpleado() {
+        mostrarEmpleado(buscarEmpleado());
 
-    public static List<Empleado> buscarEmpleado(String campo) {
-        return controladora.buscarEmpleadosByCargo(campo);
-    }
+        System.out.print("Cual es el id del empleado que quieres modificar?: ");
+        Empleado empleado = buscarEmpleado(Auxiliar.introducirDatosInteger());
 
-    public static void mostrarEmpleado(List<Empleado> empleados) {
-        for (Empleado empleado : empleados)
-            System.out.println(empleado);
-    }
+        System.out.print("Que parametro quieres modificar: ");
+        String parametro = Auxiliar.introducirDatosString();
 
-    private static String introducirDatosString() {
-        Scanner sc = new Scanner(System.in);
-        Boolean repetir = true;
-        String entrada = "";
-
-        while (repetir) {
-            entrada = sc.nextLine();
-
-            if (!entrada.isEmpty() || !(entrada == null)) repetir = true;
-            else System.out.println("---- El campo no puede ir vacio ----");
+        switch (parametro) {
+            case "nombre":
+                System.out.print("Escribe el nuevo nombre: ");
+                empleado.setNombre(Auxiliar.introducirDatosString());
+                break;
+            case "apellido":
+                System.out.print("Escribe el nuevo Apellido: ");
+                empleado.setApellido(Auxiliar.introducirDatosString());
+                break;
+            case "cargo":
+                System.out.print("Escribe el nuevo cargo: ");
+                empleado.setCargo(Auxiliar.introducirDatosString());
+                break;
+            case "salario":
+                System.out.print("Escribe el nuevo nombre: ");
+                empleado.setSalario(Auxiliar.introducirDatosDouble());
+                break;
+            case "fechaInicio":
+                System.out.print("Escribe el nuevo nombre: ");
+                empleado.setFechaInicio(Auxiliar.introducirDatosDate());
+                break;
+            default:
+                System.err.println("El parametro indicado no existe");
         }
 
-        sc.close();
-
-        return entrada;
+        return empleado;
     }
 
-    private static Double introducirDatosDouble() {
+
+    private static void menu() {
+        String msg = "Que opcion desea hacer?";
+        String opciones = "1 - Mostrar empleados de la lista." +
+                "\n2 - Mostrar empleados en un cargo" +
+                "\n3 - Agregar un nuevo empleado." +
+                "\n4 - Modificar un empleado" +
+                "\n5 - Eliminar un empleado" +
+                "\n6 - Salir";
         Boolean repetir = true;
-        String entrada;
 
         do {
-            entrada = introducirDatosString();
+            System.out.println(msg);
+            System.out.println(opciones);
+            System.out.printf("Introduce opcion: ");
+            Integer respuesta = Auxiliar.introducirDatosInteger();
 
-            if (!Double.isNaN(Double.parseDouble(entrada))) repetir = false;
-            else System.out.print("El numero introducido es incorrecto.\nPor favor introduce de nuevo: ");
+            if (respuesta > 0 && respuesta <= 6) switch (respuesta) {
+                case 1:
+                    mostrarEmpleado(buscarEmpleado());
+                    break;
+                case 2:
+                    System.out.println("Que cargo desea buscar?");
+                    System.out.printf("Introduce cargo: ");
+                    mostrarEmpleado(buscarEmpleado(Auxiliar.introducirDatosString()));
+                    break;
+                case 3:
+                    registrarEmpleado(crearEmpleado());
+                    break;
+                case 4:
+                    actualizarEmpleado(modificarEmpleado());
+                    break;
+                case 5:
+                    System.out.print("Cual es el id del empleado que quieres borrar?: ");
+                    eliminarEmpleado(Auxiliar.introducirDatosInteger());
+                    break;
+                default:
+                    repetir = false;
+            }
         } while (repetir);
-
-        return Double.parseDouble(entrada);
-    }
-
-    private static Date introducirDatosDate() {
-        return null;
     }
 }

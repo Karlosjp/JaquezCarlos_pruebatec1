@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class ControladoraPersistencia {
     EmpleadoController empleadoJPA = new EmpleadoController();
 
-    public void crearEmpleado(Empleado empleado) {
+    public void agregarEmpleado(Empleado empleado) {
         empleadoJPA.create(empleado);
     }
 
@@ -20,6 +20,14 @@ public class ControladoraPersistencia {
 
     public List<Empleado> buscarEmpleadosByCargo(String cargo) {
         return empleadoJPA.findEmpleadoByCargo(cargo);
+    }
+
+    public Empleado buscarEmpleadoById(Long id) {
+        return empleadoJPA.findEmpleadoById(id);
+    }
+
+    public Long buscarEmpleadoLastId() {
+        return empleadoJPA.findEmpleadoLastId();
     }
 
     public void modificarEmpleado(Empleado empleado) {
