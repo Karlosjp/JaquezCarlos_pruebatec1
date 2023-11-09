@@ -59,7 +59,6 @@ public class Main {
 
     public static void eliminarEmpleado(long id) {
         controladora.eliminarEmpleado(id);
-        System.out.println("Empleado borrado");
     }
 
     private static void mostrarEmpleado(List<Empleado> empleados) {
@@ -106,40 +105,42 @@ public class Main {
     private static Empleado modificarEmpleado() {
         mostrarEmpleado(buscarEmpleado());
 
-        System.out.print("Cual es el id del empleado que quieres modificar?: ");
+        System.out.print("Cual es el ID del empleado que quieres modificar?: ");
         Empleado empleado = buscarEmpleado(Auxiliar.introducirDatosInteger());
 
-        System.out.print("Que parametro quieres modificar: ");
-        String parametro = Auxiliar.introducirDatosString();
+        if (empleado != null) {
+            System.out.print("Que parametro quieres modificar: ");
+            String parametro = Auxiliar.introducirDatosString();
 
-        switch (parametro) {
-            case "nombre":
-                System.out.print("Escribe el nuevo nombre: ");
-                empleado.setNombre(Auxiliar.introducirDatosString());
-                break;
-            case "apellido":
-                System.out.print("Escribe el nuevo Apellido: ");
-                empleado.setApellido(Auxiliar.introducirDatosString());
-                break;
-            case "cargo":
-                System.out.print("Escribe el nuevo cargo: ");
-                empleado.setCargo(Auxiliar.introducirDatosString());
-                break;
-            case "salario":
-                System.out.print("Escribe el nuevo nombre: ");
-                empleado.setSalario(Auxiliar.introducirDatosDouble());
-                break;
-            case "fechaInicio":
-                System.out.print("Escribe el nuevo nombre: ");
-                empleado.setFechaInicio(Auxiliar.introducirDatosDate());
-                break;
-            default:
-                System.err.println("El parametro indicado no existe");
-        }
+            switch (parametro) {
+                case "nombre":
+                    System.out.print("Escribe el nuevo nombre: ");
+                    empleado.setNombre(Auxiliar.introducirDatosString());
+                    break;
+                case "apellido":
+                    System.out.print("Escribe el nuevo Apellido: ");
+                    empleado.setApellido(Auxiliar.introducirDatosString());
+                    break;
+                case "cargo":
+                    System.out.print("Escribe el nuevo cargo: ");
+                    empleado.setCargo(Auxiliar.introducirDatosString());
+                    break;
+                case "salario":
+                    System.out.print("Escribe el nuevo nombre: ");
+                    empleado.setSalario(Auxiliar.introducirDatosDouble());
+                    break;
+                case "fechaInicio":
+                    System.out.print("Escribe el nuevo nombre: ");
+                    empleado.setFechaInicio(Auxiliar.introducirDatosDate());
+                    break;
+                default:
+                    System.err.println("El parametro indicado no existe");
+            }
+        } else
+            System.out.println("El ID de empleado no existe");
 
         return empleado;
     }
-
 
     private static void menu() {
         String msg = "Que opcion desea hacer?";
@@ -170,7 +171,12 @@ public class Main {
                     registrarEmpleado(crearEmpleado());
                     break;
                 case 4:
-                    actualizarEmpleado(modificarEmpleado());
+                    Empleado empleado = modificarEmpleado();
+
+                    if (empleado != null)
+                        actualizarEmpleado(empleado);
+                    else
+                        System.out.println("No se han realizado cambios");
                     break;
                 case 5:
                     System.out.print("Cual es el id del empleado que quieres borrar?: ");
