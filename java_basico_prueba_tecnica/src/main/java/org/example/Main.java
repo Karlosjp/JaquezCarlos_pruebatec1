@@ -3,37 +3,21 @@ package org.example;
 import org.example.complements.Auxiliar;
 import org.example.logica.Empleado;
 import org.example.persistencia.ControladoraPersistencia;
+import org.example.persistencia.exceptions.NonExistentEntityException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     private static ControladoraPersistencia controladora = new ControladoraPersistencia();
-    private static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
         System.out.println("Bienbenido al programa.");
 
         menu();
 
         System.out.println("El programa ha finalizado");
-        sc.close();
-       /*
-        List<Empleado> listEmpleados = new ArrayList<>();
-        Empleado empleado1 = new Empleado(controladora.buscarEmpleadoLastId(), "Carlos", "Jaquez", "Cargo 1", 1000.0, stringToDate("6/11/2023"));
-        Empleado empleado2 = new Empleado(controladora.buscarEmpleadoLastId(), "Miguel", "German", "Cargo 2", 1100.0, stringToDate("5/10/2022"));
-        Empleado empleado3 = new Empleado(controladora.buscarEmpleadoLastId(), "Fernando", "Santos", "Cargo 1", 1200.0, stringToDate("10/11/2020"));
-        Empleado empleado4 = new Empleado(controladora.buscarEmpleadoLastId(), "Anny", "Marte", "Cargo 3", 1300.0, stringToDate("15/11/2013"));
-        Empleado empleado5 = new Empleado(controladora.buscarEmpleadoLastId(), "Marta", "Cuevas", "Cargo 4", 1400.0, stringToDate("6/1/2018"));
-
-
-        mostrarEmpleado(buscarEmpleado());
-        mostrarEmpleado(buscarEmpleado("Cargo 4"));
-        mostrarEmpleado(buscarEmpleado("Cargo 1"));
-
-        */
     }
-
 
     public static void registrarEmpleado(Empleado empleado) {
         controladora.agregarEmpleado(empleado);
@@ -53,17 +37,27 @@ public class Main {
     }
 
     public static void actualizarEmpleado(Empleado empleado) {
-        controladora.modificarEmpleado(empleado);
-        System.out.println("Actualizacion realizada");
+        try {
+            controladora.modificarEmpleado(empleado);
+            System.out.println("Actualizacion realizada");
+        } catch (NonExistentEntityException exception) {
+            System.err.println(exception.getMessage());
+        }
     }
 
     public static void eliminarEmpleado(long id) {
-        controladora.eliminarEmpleado(id);
+        try {
+            controladora.eliminarEmpleado(id);
+            System.out.println("El empleado ha sido");
+        } catch (NonExistentEntityException exception) {
+            System.err.println(exception.getMessage());
+        }
     }
 
     private static void mostrarEmpleado(List<Empleado> empleados) {
-        for (Empleado empleado : empleados)
+        if (empleados.size() > 0) for (Empleado empleado : empleados)
             System.out.println(empleado);
+        else System.err.println("No hay empleados para mostrar ");
     }
 
     private static Empleado crearEmpleado() {
@@ -102,44 +96,51 @@ public class Main {
         return nuevoEmpleado;
     }
 
+    /*
+        Crea un clon del empleado seleccionado y luego lo compara con el original. Si no se han producido cambios no es
+        necesario continuar
+     */
     private static Empleado modificarEmpleado() {
         mostrarEmpleado(buscarEmpleado());
 
-        System.out.print("Cual es el ID del empleado que quieres modificar?: ");
+        System.out.println("Cual es el ID del empleado que quieres modificar?: ");
         Empleado empleado = buscarEmpleado(Auxiliar.introducirDatosInteger());
+        Empleado empleadoEditado = null;
 
         if (empleado != null) {
             System.out.print("Que parametro quieres modificar: ");
             String parametro = Auxiliar.introducirDatosString();
+            empleadoEditado = new Empleado(empleado);
 
             switch (parametro) {
                 case "nombre":
                     System.out.print("Escribe el nuevo nombre: ");
-                    empleado.setNombre(Auxiliar.introducirDatosString());
+                    empleadoEditado.setNombre(Auxiliar.introducirDatosString());
                     break;
                 case "apellido":
                     System.out.print("Escribe el nuevo Apellido: ");
-                    empleado.setApellido(Auxiliar.introducirDatosString());
+                    empleadoEditado.setApellido(Auxiliar.introducirDatosString());
                     break;
                 case "cargo":
                     System.out.print("Escribe el nuevo cargo: ");
-                    empleado.setCargo(Auxiliar.introducirDatosString());
+                    empleadoEditado.setCargo(Auxiliar.introducirDatosString());
                     break;
                 case "salario":
                     System.out.print("Escribe el nuevo nombre: ");
-                    empleado.setSalario(Auxiliar.introducirDatosDouble());
+                    empleadoEditado.setSalario(Auxiliar.introducirDatosDouble());
                     break;
                 case "fechaInicio":
                     System.out.print("Escribe el nuevo nombre: ");
-                    empleado.setFechaInicio(Auxiliar.introducirDatosDate());
+                    empleadoEditado.setFechaInicio(Auxiliar.introducirDatosDate());
                     break;
                 default:
                     System.err.println("El parametro indicado no existe");
             }
-        } else
-            System.out.println("El ID de empleado no existe");
 
-        return empleado;
+            if (!empleado.equals(empleadoEditado)) return empleadoEditado;
+        } else System.out.println("El ID de empleado no existe");
+
+        return null;
     }
 
     private static void menu() {
@@ -173,10 +174,8 @@ public class Main {
                 case 4:
                     Empleado empleado = modificarEmpleado();
 
-                    if (empleado != null)
-                        actualizarEmpleado(empleado);
-                    else
-                        System.out.println("No se han realizado cambios");
+                    if (empleado != null) actualizarEmpleado(empleado);
+                    else System.out.println("No se han realizado cambios");
                     break;
                 case 5:
                     System.out.print("Cual es el id del empleado que quieres borrar?: ");
@@ -185,6 +184,7 @@ public class Main {
                 default:
                     repetir = false;
             }
+            else System.out.println("La opcion elegida no existe. (Las opciones son del 1 al 6)");
         } while (repetir);
     }
 }

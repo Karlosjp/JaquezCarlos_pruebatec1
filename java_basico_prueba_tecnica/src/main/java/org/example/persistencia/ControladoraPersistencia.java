@@ -1,7 +1,7 @@
 package org.example.persistencia;
 
 import org.example.logica.Empleado;
-import org.example.persistencia.exceptions.NonexistentEntityException;
+import org.example.persistencia.exceptions.NonExistentEntityException;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -30,19 +30,21 @@ public class ControladoraPersistencia {
         return empleadoJPA.findEmpleadoLastId();
     }
 
-    public void modificarEmpleado(Empleado empleado) {
+    public void modificarEmpleado(Empleado empleado) throws NonExistentEntityException {
         try {
             empleadoJPA.edit(empleado);
-        } catch (NonexistentEntityException e) {
-            Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, e);
+        } catch (NonExistentEntityException exception) {
+            Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, exception.getMessage());
+            throw new NonExistentEntityException(exception.getMessage());
         }
     }
 
-    public void eliminarEmpleado(long id) {
+    public void eliminarEmpleado(long id) throws NonExistentEntityException {
         try {
             empleadoJPA.destroy(id);
-        } catch (NonexistentEntityException e) {
-            Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, e);
+        } catch (NonExistentEntityException exception) {
+            Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, exception.getMessage());
+            throw new NonExistentEntityException(exception.getMessage());
         }
     }
 

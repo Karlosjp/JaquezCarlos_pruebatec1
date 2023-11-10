@@ -1,7 +1,7 @@
 package org.example.persistencia;
 
 import org.example.logica.Empleado;
-import org.example.persistencia.exceptions.NonexistentEntityException;
+import org.example.persistencia.exceptions.NonExistentEntityException;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -33,7 +33,7 @@ public class EmpleadoController {
         }
     }
 
-    public void destroy(long id) throws NonexistentEntityException {
+    public void destroy(long id) throws NonExistentEntityException {
         EntityManager em = null;
 
         try {
@@ -45,7 +45,7 @@ public class EmpleadoController {
                 empleado = em.getReference(Empleado.class, id);
                 empleado.getId();
             } catch (EntityNotFoundException enf) {
-                throw new NonexistentEntityException("El empleado con el ID: " + id + " no existe.");
+                throw new NonExistentEntityException("El empleado con el ID: " + id + " no existe.");
             }
 
             em.remove(empleado);
@@ -55,7 +55,7 @@ public class EmpleadoController {
         }
     }
 
-    public void edit(Empleado empleado) throws NonexistentEntityException {
+    public void edit(Empleado empleado) throws NonExistentEntityException {
         EntityManager em = null;
 
         try {
@@ -72,7 +72,7 @@ public class EmpleadoController {
                 long id = empleado.getId();
 
                 if (findEmpleadoById(id) == null)
-                    throw new NonexistentEntityException("EL empleado con ID: " + id + " no existe");
+                    throw new NonExistentEntityException("EL empleado con ID: " + id + " no existe");
             }
 
             throw ex;

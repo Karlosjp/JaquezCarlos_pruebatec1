@@ -6,8 +6,13 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Auxiliar {
-    public static Scanner sc = new Scanner(System.in);
+    private static Scanner sc = new Scanner(System.in);
 
+    public static void cerrarScanner() {
+        sc.close();
+    }
+
+    // Recoge un String y comprueba que sea correcto
     public static String introducirDatosString() {
 
         Boolean repetir = true;
@@ -17,12 +22,13 @@ public class Auxiliar {
             entrada = sc.nextLine();
 
             if (!entrada.isEmpty() && !(entrada == null)) repetir = false;
-            else System.out.println("---- El campo no puede ir vacio ---- \nIntroduce de nuevo");
+            else System.out.println("---- El campo no puede ir vacio ---- \nIntroduce de nuevo: ");
         }
 
         return entrada;
     }
 
+    // Recoge un double y comprueba que sea un numero correcto
     public static Double introducirDatosDouble() {
         Boolean repetir = true;
         String entrada;
@@ -40,6 +46,7 @@ public class Auxiliar {
         return Double.parseDouble(entrada);
     }
 
+    // Recoge un int y comprueba que sea un numero entero
     public static Integer introducirDatosInteger() {
         Boolean repetir = true;
         String entrada;
@@ -57,6 +64,7 @@ public class Auxiliar {
         return Integer.parseInt(entrada);
     }
 
+    // Pregunta por consola los datos necesarios para crear un objeto Date
     public static Date introducirDatosDate() {
         boolean repetir = true;
         Date fecha = null;
@@ -73,15 +81,16 @@ public class Auxiliar {
 
             fecha = stringToDate(dia + "/" + mes + "/" + anno);
 
-            if (fecha != null)
-                repetir = false;
+            if (fecha != null) repetir = false;
         }
 
         return fecha;
     }
 
+    // Transforma un String en objeto Date.
     public static Date stringToDate(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false);
 
         try {
             return sdf.parse(date);

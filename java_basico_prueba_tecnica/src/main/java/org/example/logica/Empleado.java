@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Empleado {
@@ -28,6 +29,15 @@ public class Empleado {
         this.cargo = cargo;
         this.salario = salario;
         this.fechaInicio = fechaInicio;
+    }
+
+    public Empleado(Empleado clon) {
+        this.id = clon.id;
+        this.nombre = clon.nombre;
+        this.apellido = clon.apellido;
+        this.cargo = clon.cargo;
+        this.salario = clon.salario;
+        this.fechaInicio = clon.fechaInicio;
     }
 
     public long getId() {
@@ -80,13 +90,19 @@ public class Empleado {
 
     @Override
     public String toString() {
-        return "Empleado{" +
-                ", ID = '" + id + '\'' +
-                ", Nombre = '" + nombre + '\'' +
-                ", Apellido = '" + apellido + '\'' +
-                ", Cargo = '" + cargo + '\'' +
-                ", Salario = " + salario +
-                ", Fecha de inicio = " + fechaInicio +
-                '}';
+        return "Empleado{" + ", ID = '" + id + '\'' + ", Nombre = '" + nombre + '\'' + ", Apellido = '" + apellido + '\'' + ", Cargo = '" + cargo + '\'' + ", Salario = " + salario + ", Fecha de inicio = " + fechaInicio + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Empleado empleado = (Empleado) o;
+        return getId() == empleado.getId() && Double.compare(empleado.getSalario(), getSalario()) == 0 && getNombre().equals(empleado.getNombre()) && getApellido().equals(empleado.getApellido()) && getCargo().equals(empleado.getCargo()) && getFechaInicio().equals(empleado.getFechaInicio());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getNombre(), getApellido(), getCargo(), getSalario(), getFechaInicio());
     }
 }
